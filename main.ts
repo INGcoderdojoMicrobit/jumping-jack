@@ -2,27 +2,43 @@ namespace SpriteKind {
     export const podloga = SpriteKind.create()
     export const dziura = SpriteKind.create()
 }
+sprites.onOverlap(SpriteKind.Player, SpriteKind.podloga, function (sprite, otherSprite) {
+    if (ludzik.vy >= 0) {
+        ludzik.vy = 0
+        ludzik.bottom = otherSprite.top
+    } else if (ludzik.vy < 0) {
+        ludzik.vy = 0
+        ludzik.top = otherSprite.bottom
+    }
+})
+controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (ludzik.vy == 0) {
+        ludzik.ay = 50
+        ludzik.vy = -400
+    }
+})
 function doGenerujpodloge (y: number) {
-    podloga = sprites.create(img`
+    podloga2 = sprites.create(img`
         eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
         eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
         `, SpriteKind.podloga)
-    podloga.y = y
+    podloga2.y = y
 }
 function doGenerujdziure (predkosc: number, x: number, y: number, lewoprawo: number) {
-    dziura = sprites.create(img`
+    dziura2 = sprites.create(img`
         f f f f f f f f f f f f f f f f f f f f f f f f f f f f f f 
         f f f f f f f f f f f f f f f f f f f f f f f f f f f f f f 
         `, SpriteKind.dziura)
-    dziura.y = y
-    dziura.x = x
-    dziura.setVelocity(predkosc, 0)
-    dziura.setBounceOnWall(false)
-    dziura.z = lewoprawo
+    dziura2.y = y
+    dziura2.x = x
+    dziura2.setVelocity(predkosc, 0)
+    dziura2.setBounceOnWall(false)
+    dziura2.z = lewoprawo
 }
-let dziura: Sprite = null
-let podloga: Sprite = null
-let ludzik = sprites.create(img`
+let dziura2: Sprite = null
+let podloga2: Sprite = null
+let ludzik: Sprite = null
+ludzik = sprites.create(img`
     . . 4 4 4 . . . . 4 4 4 . . . . 
     . 4 5 5 5 e . . e 5 5 5 4 . . . 
     4 5 5 5 5 5 e e 5 5 5 5 5 4 . . 
@@ -38,6 +54,9 @@ let ludzik = sprites.create(img`
     . . . f 5 f f f 5 f f 5 f . . . 
     . . . f f . . f f . . f f . . . 
     `, SpriteKind.Player)
+ludzik.y = 106
+ludzik.ay = 50
+controller.moveSprite(ludzik, 40, 0)
 animation.runImageAnimation(
 ludzik,
 [img`
@@ -91,15 +110,17 @@ true
 )
 for (let index = 0; index <= 6; index++) {
     doGenerujpodloge(index * 19)
+    doGenerujdziure(randint(20, 80), -50, index * 19, randint(100, 200))
 }
-doGenerujpodloge(1)
-doGenerujdziure(randint(20, 80), -50, 100, randint(100, 200))
 game.onUpdate(function () {
-    if (dziura.x <= dziura.z * -1) {
-        dziura.setVelocity(dziura.vx * -1, 0)
-    } else if (dziura.x >= dziura.z + scene.screenWidth()) {
-        dziura.setVelocity(dziura.vx * -1, 0)
-    } else {
-    	
+    if (dziura2.x <= dziura2.z * -1) {
+        dziura2.setVelocity(dziura2.vx * -1, 0)
+    } else if (dziura2.x >= dziura2.z + scene.screenWidth()) {
+        dziura2.setVelocity(dziura2.vx * -1, 0)
+    }
+    if (ludzik.x <= -5) {
+        ludzik.x = 165
+    } else if (ludzik.x >= 165) {
+        ludzik.x = -5
     }
 })

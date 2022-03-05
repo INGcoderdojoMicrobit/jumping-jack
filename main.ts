@@ -3,8 +3,9 @@ namespace SpriteKind {
     export const dziura = SpriteKind.create()
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.podloga, function (sprite, otherSprite) {
-    if (ludzik.vy >= 0) {
+    if (ludzik.vy > 0) {
         ludzik.vy = 0
+        ludzik.ay = 0
         ludzik.bottom = otherSprite.top
     } else if (ludzik.vy < 0) {
         ludzik.vy = 0
@@ -13,8 +14,8 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.podloga, function (sprite, other
 })
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     if (ludzik.vy == 0) {
-        ludzik.ay = 50
-        ludzik.vy = -400
+        ludzik.ay = 150
+        ludzik.vy = -100
     }
 })
 function doGenerujpodloge (y: number) {
@@ -26,8 +27,8 @@ function doGenerujpodloge (y: number) {
 }
 function doGenerujdziure (predkosc: number, x: number, y: number, lewoprawo: number) {
     dziura2 = sprites.create(img`
-        f f f f f f f f f f f f f f f f f f f f f f f f f f f f f f 
-        f f f f f f f f f f f f f f f f f f f f f f f f f f f f f f 
+        7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 
+        7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 
         `, SpriteKind.dziura)
     dziura2.y = y
     dziura2.x = x
@@ -56,6 +57,7 @@ ludzik = sprites.create(img`
     `, SpriteKind.Player)
 ludzik.y = 106
 ludzik.ay = 50
+ludzik.vy = 0
 controller.moveSprite(ludzik, 40, 0)
 animation.runImageAnimation(
 ludzik,
@@ -113,10 +115,12 @@ for (let index = 0; index <= 6; index++) {
     doGenerujdziure(randint(20, 80), -50, index * 19, randint(100, 200))
 }
 game.onUpdate(function () {
-    if (dziura2.x <= dziura2.z * -1) {
-        dziura2.setVelocity(dziura2.vx * -1, 0)
-    } else if (dziura2.x >= dziura2.z + scene.screenWidth()) {
-        dziura2.setVelocity(dziura2.vx * -1, 0)
+    for (let value of sprites.allOfKind(SpriteKind.dziura)) {
+        if (value.x <= value.z * -1) {
+            value.setVelocity(value.vx * -1, 0)
+        } else if (value.x >= value.z + scene.screenWidth()) {
+            value.setVelocity(value.vx * -1, 0)
+        }
     }
     if (ludzik.x <= -5) {
         ludzik.x = 165

@@ -8,16 +8,30 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.podloga, function (sprite, other
         ludzik.ay = 0
         ludzik.bottom = otherSprite.top
     } else if (ludzik.vy < 0) {
-        ludzik.vy = 0
-        ludzik.top = otherSprite.bottom
+        if (doczydziuranademna() == 1) {
+            music.baDing.play()
+        } else {
+            ludzik.vy = 0
+            ludzik.top = otherSprite.bottom
+        }
     }
 })
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     if (ludzik.vy == 0) {
-        ludzik.ay = 150
+        ludzik.ay = 180
         ludzik.vy = -100
     }
 })
+function doczydziuranademna () {
+    for (let value of sprites.allOfKind(SpriteKind.dziura)) {
+        if (value.y + 19 > ludzik.bottom && value.y - 19 < ludzik.top) {
+            if (value.left + 0 < ludzik.left && value.right - 0 > ludzik.right) {
+                return 1
+            }
+        }
+    }
+    return 0
+}
 function doGenerujpodloge (y: number) {
     podloga2 = sprites.create(img`
         eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
@@ -115,11 +129,11 @@ for (let index = 0; index <= 6; index++) {
     doGenerujdziure(randint(20, 80), -50, index * 19, randint(100, 200))
 }
 game.onUpdate(function () {
-    for (let value of sprites.allOfKind(SpriteKind.dziura)) {
-        if (value.x <= value.z * -1) {
-            value.setVelocity(value.vx * -1, 0)
-        } else if (value.x >= value.z + scene.screenWidth()) {
-            value.setVelocity(value.vx * -1, 0)
+    for (let value2 of sprites.allOfKind(SpriteKind.dziura)) {
+        if (value2.x <= value2.z * -1) {
+            value2.setVelocity(value2.vx * -1, 0)
+        } else if (value2.x >= value2.z + scene.screenWidth()) {
+            value2.setVelocity(value2.vx * -1, 0)
         }
     }
     if (ludzik.x <= -5) {

@@ -8,8 +8,11 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.podloga, function (sprite, other
         ludzik.ay = 0
         ludzik.bottom = otherSprite.top
     } else if (ludzik.vy < 0) {
-        if (doczydziuranademna() == 1) {
-            music.baDing.play()
+        czydziura = doczydziuranademna()
+        if (czydziura == 1) {
+        	
+        } else if (czydziura == 2) {
+            game.over(true)
         } else {
             ludzik.vy = 0
             ludzik.top = otherSprite.bottom
@@ -26,7 +29,11 @@ function doczydziuranademna () {
     for (let value of sprites.allOfKind(SpriteKind.dziura)) {
         if (value.y + 19 > ludzik.bottom && value.y - 19 < ludzik.top) {
             if (value.left + 0 < ludzik.left && value.right - 0 > ludzik.right) {
-                return 1
+                if (ludzik.bottom < 0) {
+                    return 2
+                } else {
+                    return 1
+                }
             }
         }
     }
@@ -52,6 +59,7 @@ function doGenerujdziure (predkosc: number, x: number, y: number, lewoprawo: num
 }
 let dziura2: Sprite = null
 let podloga2: Sprite = null
+let czydziura = 0
 let ludzik: Sprite = null
 ludzik = sprites.create(img`
     . . 4 4 4 . . . . 4 4 4 . . . . 

@@ -29,7 +29,7 @@ function doczydziuranademna () {
     for (let value of sprites.allOfKind(SpriteKind.dziura)) {
         if (value.y + 19 > ludzik.bottom && value.y - 19 < ludzik.top) {
             if (value.left + 0 < ludzik.left && value.right - 0 > ludzik.right) {
-                if (ludzik.bottom < 0) {
+                if (ludzik.top < 0) {
                     return 2
                 } else {
                     return 1
@@ -134,7 +134,7 @@ true
 )
 for (let index = 0; index <= 6; index++) {
     doGenerujpodloge(index * 19)
-    doGenerujdziure(randint(20, 80), -50, index * 19, randint(100, 200))
+    doGenerujdziure(randint(20, 30), -50, index * 19, randint(100, 200))
 }
 game.onUpdate(function () {
     for (let value2 of sprites.allOfKind(SpriteKind.dziura)) {

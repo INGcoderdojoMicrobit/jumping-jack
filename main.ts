@@ -4,9 +4,14 @@ namespace SpriteKind {
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.podloga, function (sprite, otherSprite) {
     if (ludzik.vy > 0) {
-        ludzik.vy = 0
-        ludzik.ay = 0
-        ludzik.bottom = otherSprite.top
+        czydziura = doczydzurapodemna()
+        if (czydziura == 1) {
+        	
+        } else {
+            ludzik.vy = 0
+            ludzik.ay = 0
+            ludzik.bottom = otherSprite.top
+        }
     } else if (ludzik.vy < 0) {
         czydziura = doczydziuranademna()
         if (czydziura == 1) {
@@ -41,7 +46,7 @@ function doczydziuranademna () {
 }
 function doczydzurapodemna () {
     for (let value of sprites.allOfKind(SpriteKind.dziura)) {
-        if (value.y + 0 > ludzik.bottom && value.y + 19 > ludzik.top) {
+        if (value.y + 16 > ludzik.bottom && value.y - 19 < ludzik.top) {
             if (value.left + 0 < ludzik.left && value.right - 0 > ludzik.right) {
                 if (ludzik.bottom > scene.screenHeight()) {
                     return 3

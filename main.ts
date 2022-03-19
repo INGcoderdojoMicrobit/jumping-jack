@@ -7,6 +7,8 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.podloga, function (sprite, other
         czydziura = doczydzurapodemna()
         if (czydziura == 1) {
         	
+        } else if (czydziura == 3) {
+            game.over(false)
         } else {
             ludzik.vy = 0
             ludzik.ay = 0
@@ -172,6 +174,8 @@ game.onUpdate(function () {
         czydziura = doczydzurapodemna()
         if (czydziura == 1) {
             ludzik.ay = 180
+        } else if (czydziura == 3) {
+            game.over(false)
         }
     }
 })

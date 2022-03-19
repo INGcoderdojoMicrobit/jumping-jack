@@ -39,6 +39,20 @@ function doczydziuranademna () {
     }
     return 0
 }
+function doczydzurapodemna () {
+    for (let value of sprites.allOfKind(SpriteKind.dziura)) {
+        if (value.y + 0 > ludzik.bottom && value.y + 19 > ludzik.top) {
+            if (value.left + 0 < ludzik.left && value.right - 0 > ludzik.right) {
+                if (ludzik.bottom > scene.screenHeight()) {
+                    return 3
+                } else {
+                    return 1
+                }
+            }
+        }
+    }
+    return 0
+}
 function doGenerujpodloge (y: number) {
     podloga2 = sprites.create(img`
         eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
@@ -148,5 +162,11 @@ game.onUpdate(function () {
         ludzik.x = 165
     } else if (ludzik.x >= 165) {
         ludzik.x = -5
+    }
+    if (Math.floor(ludzik.vy) == 0) {
+        czydziura = doczydzurapodemna()
+        if (czydziura == 1) {
+            ludzik.ay = 180
+        }
     }
 })

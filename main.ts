@@ -26,6 +26,29 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.podloga, function (sprite, other
         }
     }
 })
+function doGenerujplansze () {
+    for (let value of sprites.allOfKind(SpriteKind.Enemy)) {
+        value.destroy()
+    }
+    for (let value of sprites.allOfKind(SpriteKind.dziura)) {
+        value.destroy()
+    }
+    for (let value of sprites.allOfKind(SpriteKind.podloga)) {
+        value.destroy()
+    }
+    ludzik.y = 106
+    ludzik.ay = 50
+    ludzik.vy = 0
+    for (let index = 0; index <= 6; index++) {
+        doGenerujpodloge(index * 19)
+        doGenerujdziure(randint(20, 30), -50, index * 19, randint(100, 200))
+    }
+    for (let index2 = 0; index2 <= 5; index2++) {
+        if (poziomy[level][index2] == 1) {
+            doGenerujPrzeszkadzajki((index2 + 1) * 19 - 2)
+        }
+    }
+}
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     if (ludzik.vy == 0) {
         ludzik.ay = 180
@@ -47,9 +70,9 @@ function doczydziuranademna () {
     return 0
 }
 function doczydzurapodemna () {
-    for (let value of sprites.allOfKind(SpriteKind.dziura)) {
-        if (value.y + 16 > ludzik.bottom && value.y - 19 < ludzik.top) {
-            if (value.left + 0 < ludzik.left && value.right - 0 > ludzik.right) {
+    for (let value2 of sprites.allOfKind(SpriteKind.dziura)) {
+        if (value2.y + 16 > ludzik.bottom && value2.y - 19 < ludzik.top) {
+            if (value2.left + 0 < ludzik.left && value2.right - 0 > ludzik.right) {
                 if (ludzik.bottom > scene.screenHeight()) {
                     return 3
                 } else {
@@ -60,6 +83,9 @@ function doczydzurapodemna () {
     }
     return 0
 }
+info.onLifeZero(function () {
+    game.over(false)
+})
 function doGenerujpodloge (y: number) {
     podloga2 = sprites.create(img`
         eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
@@ -151,12 +177,20 @@ function doGenerujdziure (predkosc: number, x: number, y: number, lewoprawo: num
     dziura2.setBounceOnWall(false)
     dziura2.z = lewoprawo
 }
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
+    music.bigCrash.play()
+    scene.cameraShake(10, 2000)
+    pause(2000)
+    info.changeLifeBy(-1)
+    doGenerujplansze()
+})
 let dziura2: Sprite = null
 let przeszkadzajka: Sprite = null
 let podloga2: Sprite = null
 let czydziura = 0
-let ludzik: Sprite = null
 let level = 0
+let poziomy: number[][] = []
+let ludzik: Sprite = null
 ludzik = sprites.create(img`
     . . 4 4 4 . . . . 4 4 4 . . . . 
     . 4 5 5 5 e . . e 5 5 5 4 . . . 
@@ -232,7 +266,7 @@ for (let index = 0; index <= 6; index++) {
     doGenerujpodloge(index * 19)
     doGenerujdziure(randint(20, 30), -50, index * 19, randint(100, 200))
 }
-let poziomy = [
+poziomy = [
 [
 0,
 0,
@@ -282,18 +316,18 @@ let poziomy = [
 1
 ]
 ]
-for (let index = 0; index <= 5; index++) {
-    if (poziomy[level][index] == 1) {
-        doGenerujPrzeszkadzajki((index + 1) * 19 - 2)
+for (let index2 = 0; index2 <= 5; index2++) {
+    if (poziomy[level][index2] == 1) {
+        doGenerujPrzeszkadzajki((index2 + 1) * 19 - 2)
     }
 }
-music.baDing.play()
+info.setLife(3)
 game.onUpdate(function () {
-    for (let value2 of sprites.allOfKind(SpriteKind.dziura)) {
-        if (value2.x <= value2.z * -1) {
-            value2.setVelocity(value2.vx * -1, 0)
-        } else if (value2.x >= value2.z + scene.screenWidth()) {
-            value2.setVelocity(value2.vx * -1, 0)
+    for (let value22 of sprites.allOfKind(SpriteKind.dziura)) {
+        if (value22.x <= value22.z * -1) {
+            value22.setVelocity(value22.vx * -1, 0)
+        } else if (value22.x >= value22.z + scene.screenWidth()) {
+            value22.setVelocity(value22.vx * -1, 0)
         }
     }
     if (ludzik.x <= -5) {
@@ -309,9 +343,9 @@ game.onUpdate(function () {
             game.over(false)
         }
     }
-    for (let value2 of sprites.allOfKind(SpriteKind.Enemy)) {
-        if (value2.x <= value2.z * -1) {
-            value2.setVelocity(value2.vx * -1, 0)
+    for (let value23 of sprites.allOfKind(SpriteKind.Enemy)) {
+        if (value23.x <= value23.z * -1) {
+            value23.setVelocity(value23.vx * -1, 0)
             animation.runImageAnimation(
             przeszkadzajka,
             [img`
@@ -363,8 +397,8 @@ game.onUpdate(function () {
             200,
             true
             )
-        } else if (value2.x >= value2.z + scene.screenWidth()) {
-            value2.setVelocity(value2.vx * -1, 0)
+        } else if (value23.x >= value23.z + scene.screenWidth()) {
+            value23.setVelocity(value23.vx * -1, 0)
             animation.runImageAnimation(
             przeszkadzajka,
             [img`

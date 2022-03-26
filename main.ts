@@ -287,6 +287,7 @@ for (let index = 0; index <= 5; index++) {
         doGenerujPrzeszkadzajki((index + 1) * 19 - 2)
     }
 }
+music.baDing.play()
 game.onUpdate(function () {
     for (let value2 of sprites.allOfKind(SpriteKind.dziura)) {
         if (value2.x <= value2.z * -1) {

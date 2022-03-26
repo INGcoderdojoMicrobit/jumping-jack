@@ -8,7 +8,10 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.podloga, function (sprite, other
         if (czydziura == 1) {
         	
         } else if (czydziura == 3) {
-            game.over(false)
+            ludzik.startEffect(effects.fire, 2000)
+            info.changeLifeBy(-1)
+            music.bigCrash.play()
+            doGenerujplansze()
         } else {
             ludzik.vy = 0
             ludzik.ay = 0
@@ -19,7 +22,9 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.podloga, function (sprite, other
         if (czydziura == 1) {
         	
         } else if (czydziura == 2) {
-            game.over(true)
+            level += 1
+            doGenerujplansze()
+            info.changeScoreBy(1)
         } else {
             ludzik.vy = 0
             ludzik.top = otherSprite.bottom
@@ -191,6 +196,7 @@ let czydziura = 0
 let level = 0
 let poziomy: number[][] = []
 let ludzik: Sprite = null
+info.setScore(0)
 ludzik = sprites.create(img`
     . . 4 4 4 . . . . 4 4 4 . . . . 
     . 4 5 5 5 e . . e 5 5 5 4 . . . 

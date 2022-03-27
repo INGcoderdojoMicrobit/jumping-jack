@@ -10,7 +10,9 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.podloga, function (sprite, other
         } else if (czydziura == 3) {
             ludzik.startEffect(effects.fire, 2000)
             info.changeLifeBy(-1)
+            scene.cameraShake(10, 2000)
             music.bigCrash.play()
+            pause(2000)
             doGenerujplansze()
         } else {
             ludzik.vy = 0
@@ -22,6 +24,8 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.podloga, function (sprite, other
         if (czydziura == 1) {
         	
         } else if (czydziura == 2) {
+            sprite.startEffect(effects.confetti, 2000)
+            music.powerUp.play()
             level += 1
             doGenerujplansze()
             info.changeScoreBy(1)
@@ -173,8 +177,8 @@ function doGenerujPrzeszkadzajki (prz_y: number) {
 }
 function doGenerujdziure (predkosc: number, x: number, y: number, lewoprawo: number) {
     dziura2 = sprites.create(img`
-        7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 
-        7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 
+        f f f f f f f f f f f f f f f f f f f f f f f f f f f f f f 
+        f f f f f f f f f f f f f f f f f f f f f f f f f f f f f f 
         `, SpriteKind.dziura)
     dziura2.y = y
     dziura2.x = x
@@ -183,6 +187,7 @@ function doGenerujdziure (predkosc: number, x: number, y: number, lewoprawo: num
     dziura2.z = lewoprawo
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
+    sprite.startEffect(effects.fire, 2000)
     music.bigCrash.play()
     scene.cameraShake(10, 2000)
     pause(2000)
@@ -213,6 +218,7 @@ ludzik = sprites.create(img`
     . . . f 5 f f f 5 f f 5 f . . . 
     . . . f f . . f f . . f f . . . 
     `, SpriteKind.Player)
+ludzik.z = 1000
 ludzik.y = 106
 ludzik.ay = 50
 ludzik.vy = 0
@@ -341,17 +347,22 @@ game.onUpdate(function () {
     } else if (ludzik.x >= 165) {
         ludzik.x = -5
     }
-    if (Math.floor(ludzik.vy) == 0) {
+    if (Math.floor(ludzik.vy) >= 0) {
         czydziura = doczydzurapodemna()
         if (czydziura == 1) {
             ludzik.ay = 180
         } else if (czydziura == 3) {
-            game.over(false)
+            ludzik.startEffect(effects.fire, 2000)
+            scene.cameraShake(10, 2000)
+            info.changeLifeBy(-1)
+            music.bigCrash.play()
+            pause(2000)
+            doGenerujplansze()
         }
     }
     for (let value23 of sprites.allOfKind(SpriteKind.Enemy)) {
         if (value23.x <= value23.z * -1) {
-            value23.setVelocity(value23.vx * -1, 0)
+            value23.setVelocity(Math.abs(value23.vx) * 1, 0)
             animation.runImageAnimation(
             przeszkadzajka,
             [img`
@@ -404,7 +415,7 @@ game.onUpdate(function () {
             true
             )
         } else if (value23.x >= value23.z + scene.screenWidth()) {
-            value23.setVelocity(value23.vx * -1, 0)
+            value23.setVelocity(Math.abs(value23.vx) * -1, 0)
             animation.runImageAnimation(
             przeszkadzajka,
             [img`
